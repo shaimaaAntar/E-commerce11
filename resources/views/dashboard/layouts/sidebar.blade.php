@@ -24,13 +24,24 @@
         <a href="#" class="sl-menu-link">
           <div class="sl-menu-item">
             <i class="menu-item-icon ion-ios-pie-outline tx-20"></i>
-            <span class="menu-item-label">categories</span>
+            <span class="menu-item-label">{{__('categories')}}</span>
             <i class="menu-item-arrow fa fa-angle-down"></i>
           </div><!-- menu-item -->
         </a><!-- sl-menu-link -->
         <ul class="sl-menu-sub nav flex-column">
           <li class="nav-item"><a href="{{route('categories.index')}}" class="nav-link">Categories</a></li>
           <li class="nav-item"><a href="{{route('categories.create')}}" class="nav-link">Add</a></li>
+          </ul>
+        <a href="#" class="sl-menu-link">
+          <div class="sl-menu-item">
+            <i class="menu-item-icon ion-ios-pie-outline tx-20"></i>
+            <span class="menu-item-label">{{__('auth.products')}}</span>
+            <i class="menu-item-arrow fa fa-angle-down"></i>
+          </div><!-- menu-item -->
+        </a><!-- sl-menu-link -->
+        <ul class="sl-menu-sub nav flex-column">
+          <li class="nav-item"><a href="{{route('products.index')}}" class="nav-link">Products</a></li>
+          <li class="nav-item"><a href="{{route('products.create')}}" class="nav-link">Add</a></li>
           </ul>
         
       </div><!-- sl-sideleft-menu -->

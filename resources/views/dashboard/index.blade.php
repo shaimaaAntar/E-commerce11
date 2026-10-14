@@ -173,7 +173,9 @@
         </div><!-- tab-content -->
     </div>
     <!-- ########## START: MAIN PANEL ########## -->
-    <div class="sl-mainpanel">
+    {{-- <div class="sl-mainpanel">    --}}
+         <div>
+
         <nav class="breadcrumb sl-breadcrumb">
             <a class="breadcrumb-item" href="index.html">Starlight</a>
             <span class="breadcrumb-item active">Dashboard</span>

@@ -2,33 +2,76 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use App\Models\Category;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
-
+use Yajra\DataTables\Facades\DataTables;
 class ProductController extends Controller
-{
+{ 
+    private ProductRepository $repository;
+    public function __construct(ProductRepository $repository)
+    {
+         $this->repository=$repository;
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            return DataTables::of(Product::with('category'))
+                ->addIndexColumn()
+                ->addColumn('category', function ($row) {
+                    return $row->category->name ?? '-';
+                })
+                ->addColumn('status', function ($row) {
+                    return $row->status
+                        ? '<span class="badge badge-success">Active</span>'
+                        : '<span class="badge badge-secondary">Inactive</span>';
+                })
+                ->addColumn('action', function ($row) {
+                    return '
+                        <a href="'.route('products.edit', $row->id).'"
+                        class="btn btn-sm btn-primary">
+                            Edit
+                        </a>
+
+                        <button type="button"
+                                data-url="'.route('products.destroy', $row->id).'"
+                                class="btn btn-sm btn-danger delete">
+                            Delete
+                        </button>
+                    ';
+                })
+                ->rawColumns(['status', 'action'])
+                ->make(true);
+        }
+
+        return view('dashboard.products.index');
     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        //
-    }
+{
+    $categories = Category::all();
 
+    return view('dashboard.products.add', compact('categories'));
+}
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        //
+        $this->repository->store($request->validated());
+
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Product created successfully.');
     }
 
     /**
@@ -44,15 +87,27 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $categories = Category::all();
+
+        return view('dashboard.products.edit', compact(
+            'product',
+            'categories'
+        ));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
-    {
-        //
+    public function update(UpdateProductRequest $request,Product $product) {
+        $this->repository->update(
+            $product,
+        $request->validated()
+    );
+
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Product updated successfully.');
     }
 
     /**
@@ -60,6 +115,9 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+       $this->repository->destroy($product);
+         return redirect()
+        ->route('products.index')
+        ->with('success', 'Product deleted successfully.');
     }
 }

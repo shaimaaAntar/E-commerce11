@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BackendController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\frontEndController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,7 @@ Route::controller(BackendController::class)->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('categories', CategoryController::class);
+    Route::resource('products', ProductController::class);
 });
 
 Route::middleware('auth')->group(function () {
