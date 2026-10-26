@@ -1,3 +1,4 @@
+
 @extends('dashboard.master')
 
 @section('content')
@@ -19,6 +20,7 @@
                 <tr>
                     <th>#</th>
                     <th>Product Name</th>
+                    <th>Product Images</th>
                     <th>Category</th>
                     <th>SKU</th>
                     <th>Price</th>
@@ -60,6 +62,12 @@
                     name: 'name'
                 },
                 {
+                    data: 'images',
+                    name: 'images',
+                    orderable: false,
+                    searchable: false
+                },
+                {
                     data: 'category',
                     name: 'category'
                 },
@@ -93,29 +101,29 @@
     });
 
     $('#products-table').on('click', '.delete', function (e) {
-    e.preventDefault();
+        e.preventDefault();
 
-    let url = $(this).data('url');
+        let url = $(this).data('url');
 
-    if (confirm('Are you sure you want to delete this product?')) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                _method: 'DELETE',
-                _token: '{{ csrf_token() }}'
-            },
-            success: function (response) {
-                $('#products-table').DataTable().ajax.reload();
-                alert('Product deleted successfully');
-            },
-            error: function (xhr) {
-                alert('Something went wrong. Status: ' + xhr.status);
-                console.log(xhr.responseText);
-            }
-        });
-    }
-});
+        if (confirm('Are you sure you want to delete this product?')) {
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    _method: 'DELETE',
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (response) {
+                    $('#products-table').DataTable().ajax.reload();
+                    alert('Product deleted successfully');
+                },
+                error: function (xhr) {
+                    alert('Something went wrong. Status: ' + xhr.status);
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+    });
 </script>
 
 @endpush

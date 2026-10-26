@@ -19,39 +19,60 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        if ($request->ajax()) {
-            return DataTables::of(Product::with('category'))
-                ->addIndexColumn()
-                ->addColumn('category', function ($row) {
-                    return $row->category->name ?? '-';
-                })
-                ->addColumn('status', function ($row) {
-                    return $row->status
-                        ? '<span class="badge badge-success">Active</span>'
-                        : '<span class="badge badge-secondary">Inactive</span>';
-                })
-                ->addColumn('action', function ($row) {
-                    return '
-                        <a href="'.route('products.edit', $row->id).'"
-                        class="btn btn-sm btn-primary">
-                            Edit
-                        </a>
+   
+public function index(Request $request)
+{
+    if ($request->ajax()) {
+        return DataTables::of(Product::with(['category', 'images']))
+            ->addIndexColumn()
+            ->addColumn('images', function ($row) {
+                if ($row->images->isEmpty()) {
+                    return '<span class="text-muted">No images</span>';
+                }
 
-                        <button type="button"
-                                data-url="'.route('products.destroy', $row->id).'"
-                                class="btn btn-sm btn-danger delete">
-                            Delete
-                        </button>
-                    ';
-                })
-                ->rawColumns(['status', 'action'])
-                ->make(true);
-        }
+                $html = '';
 
-        return view('dashboard.products.index');
+                foreach ($row->images as $image) {
+                    $url = asset('storage/' . $image->path);
+
+                    $html .= '<img src="' . e($url) . '"
+                        alt="' . e($row->name) . '"
+                        width="50"
+                        height="50"
+                        style="object-fit: cover; margin: 2px; border-radius: 4px;">';
+                }
+
+                return $html;
+            })
+            ->addColumn('category', function ($row) {
+                return $row->category->name ?? '-';
+            })
+            ->addColumn('status', function ($row) {
+                return $row->status
+                    ? '<span class="badge badge-success">Active</span>'
+                    : '<span class="badge badge-secondary">Inactive</span>';
+            })
+            ->addColumn('action', function ($row) {
+                return '
+                    <a href="'.route('products.edit', $row->id).'"
+                    class="btn btn-sm btn-primary">
+                        Edit
+                    </a>
+
+                    <button type="button"
+                            data-url="'.route('products.destroy', $row->id).'"
+                            class="btn btn-sm btn-danger delete">
+                        Delete
+                    </button>
+                ';
+            })
+            ->rawColumns(['images', 'status', 'action'])
+            ->make(true);
     }
+
+    return view('dashboard.products.index');
+}
+
 
     /**
      * Show the form for creating a new resource.

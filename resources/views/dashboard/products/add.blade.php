@@ -7,7 +7,7 @@
 
         <h5 class="card-title mb-4">Add Product</h5>
 
-        <form action="{{ route('products.store') }}" method="POST">
+        <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             {{-- Category --}}
@@ -46,6 +46,26 @@
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
+        <div class="form-group mb-3">
+            <label for="images">Product Images</label>
+
+            <input
+                type="file"
+                name="images[]"
+                id="images"
+                class="form-control"
+                accept="image/*"
+                multiple
+            >
+
+            @error('images')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
+
+            @error('images.*')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
+        </div>
 
             {{-- Slug --}}
             <div class="form-group mb-3">

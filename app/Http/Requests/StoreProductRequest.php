@@ -17,6 +17,9 @@ class StoreProductRequest extends FormRequest
             'category_id' => ['required', 'exists:categories,id'],
 
             'name' => ['required', 'string', 'max:255'],
+             
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
 
             'slug' => ['required', 'string', 'max:255', 'unique:products,slug'],
 
