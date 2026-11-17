@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\frontEndController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Frontend\ProductController as FrontendProductController;
 
 Route::controller(frontEndController::class)->group(function () {
     Route::get('/', 'home')->name('home');
@@ -15,7 +16,7 @@ Route::controller(BackendController::class)->group(function () {
     Route::get('/dashboard', 'dashboard')->name('dashboard');
 })->middleware(['auth', 'verified', 'role:admin']);
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('products', ProductController::class);
 });
@@ -25,5 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+Route::get('/products/{slug}', [FrontendProductController::class, 'show'])
+    ->name('frontend.products.show');
 
 require __DIR__.'/auth.php';
